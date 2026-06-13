@@ -1,4 +1,3 @@
-import { redirect } from 'next/navigation';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import Image from 'next/image';
@@ -7,36 +6,53 @@ export default async function ProfilePage() {
     const session = await getServerSession(authOptions);
 
     return (
-        <div className="min-h-screen bg-gray-100 p-8">
-            <div className="max-w-4xl mx-auto">
-                <div className="bg-white rounded-lg shadow-md p-6">
-                    <h1 className="text-3xl text-gray-900 font-bold mb-4">
-                        Profile
-                    </h1>
+        <div className="min-h-screen bg-page py-12 px-4">
+            <div className="max-w-2xl mx-auto">
 
-                    <div className="mb-6">
-                        <p className="text-gray-700 mb-2">
-                            Name: <span className="font-semibold">{session?.user?.name}</span>
-                        </p>
-                        <p className="text-gray-700 mb-2">
-                            Email: <span className="font-semibold">{session?.user?.email}</span>
-                        </p>
-                        {session?.user?.image && (
-                            <>
-                                <p className="text-gray-700 mb-2">
-                                    Image Profile:
-                                </p>
+                <h1 className="text-2xl font-bold text-slate-800 mb-6">Mi Perfil</h1>
+
+                <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+                    <div className="bg-gradient-to-r from-brand to-accent h-28" />
+
+                    <div className="px-8 pb-8">
+                        <div className="-mt-12 mb-6">
+                            {session?.user?.image ? (
                                 <Image
-                                    height={100}
-                                    width={100}
+                                    height={96}
+                                    width={96}
                                     src={session.user.image}
-                                    alt="Profile"
-                                    className="w-16 h-16 rounded-full mt-4"
+                                    alt="Avatar"
+                                    className="w-24 h-24 rounded-full ring-4 ring-white shadow-md"
                                 />
-                            </>
-                        )}
+                            ) : (
+                                <div className="w-24 h-24 rounded-full bg-indigo-600 flex items-center justify-center text-3xl font-bold text-white ring-4 ring-white shadow-md">
+                                    {session?.user?.name?.charAt(0).toUpperCase() ?? "U"}
+                                </div>
+                            )}
+                        </div>
+
+                        <h2 className="text-xl font-bold text-slate-800 mb-1">{session?.user?.name}</h2>
+                        <p className="text-text-muted text-sm mb-6">{session?.user?.email}</p>
+
+                        <div className="border-t border-slate-100 pt-6 flex flex-col gap-1">
+                            <div className="flex justify-between items-center py-3 border-b border-slate-50">
+                                <span className="text-xs font-semibold text-text-faint uppercase tracking-wide">Nombre</span>
+                                <span className="text-sm font-medium text-slate-700">{session?.user?.name}</span>
+                            </div>
+                            <div className="flex justify-between items-center py-3 border-b border-slate-50">
+                                <span className="text-xs font-semibold text-text-faint uppercase tracking-wide">Email</span>
+                                <span className="text-sm font-medium text-slate-700">{session?.user?.email}</span>
+                            </div>
+                            <div className="flex justify-between items-center py-3">
+                                <span className="text-xs font-semibold text-text-faint uppercase tracking-wide">Estado</span>
+                                <span className="text-xs bg-green-100 text-green-700 px-3 py-1 rounded-full font-semibold">
+                                    Activo
+                                </span>
+                            </div>
+                        </div>
                     </div>
                 </div>
+
             </div>
         </div>
     );

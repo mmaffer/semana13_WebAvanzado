@@ -8,91 +8,77 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import Image from "next/image";
 import Provider from "@/components/SessionProvider";
 
-const geistSans = Geist({
-    variable: "--font-geist-sans",
-    subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-    variable: "--font-geist-mono",
-    subsets: ["latin"],
-});
+const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
+const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
 export const metadata: Metadata = {
     title: "Next Auth App",
     description: "My Next Auth App",
 };
 
-export default async function RootLayout({
-    children,
-}: Readonly<{
-    children: React.ReactNode;
-}>) {
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
     const session = await getServerSession(authOptions);
-    console.log(session);
 
     return (
         <html lang="en">
-            <body
-                className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-            >
-                <nav className="w-full bg-black shadow-sm text-white">
-                    <div className="mx-auto px-6 py-4 flex items-center justify-between">
-                        <Link href="/" className="text-xl font-semibold text-white">
+            <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-page`}>
+                <nav className="w-full bg-nav border-b border-nav-border">
+                    <div className="max-w-6xl mx-auto px-6 py-3 flex items-center justify-between">
+                        <Link href="/" className="text-white font-bold text-lg tracking-tight">
                             MyAuthApp
                         </Link>
-                        <ul className="flex items-center justify-center gap-6 text-sm">
+
+                        <ul className="flex items-center gap-1 text-sm">
                             <li>
-                                <Link href="/dashboard" className="text-white hover:text-gray-400">
+                                <Link href="/dashboard" className="text-text-muted hover:text-white px-3 py-2 rounded-lg hover:bg-white/5 transition">
                                     Dashboard
                                 </Link>
                             </li>
-                            {session?.user && (
-                                <li>
-                                    <Link href="/profile" className="text-white hover:text-gray-400">
-                                        Profile
-                                    </Link>
-                                </li>
-                            )}
-                            {!session?.user && (
-                                <li>
-                                    <Link href="/register" className="text-white hover:text-gray-400">
-                                        Registrarse
-                                    </Link>
-                                </li>
-                            )}
-                            {!session?.user && (
-                                <li>
-                                    <Link href="/signIn" className="text-white hover:text-gray-400">
-                                        Iniciar sesión
-                                    </Link>
-                                </li>
-                            )}
-                            {session?.user && (
-                                <li>
-                                    <LogoutButton />
-                                </li>
-                            )}
-                            {session?.user && (
-                                <li>
-                                    {session.user.image ? (
-                                        <Image
-                                            height={40}
-                                            width={40}
-                                            src={session.user.image}
-                                            alt="Profile"
-                                            className="w-10 h-10 rounded-full"
-                                        />
-                                    ) : (
-                                        <div className="w-10 h-10 rounded-full bg-gray-600 flex items-center justify-center text-white font-semibold text-sm">
-                                            {session.user.name?.charAt(0).toUpperCase() ?? "U"}
-                                        </div>
-                                    )}
-                                </li>
+
+                            {session?.user ? (
+                                <>
+                                    <li>
+                                        <Link href="/profile" className="text-text-muted hover:text-white px-3 py-2 rounded-lg hover:bg-white/5 transition">
+                                            Perfil
+                                        </Link>
+                                    </li>
+                                    <li>
+                                        <LogoutButton />
+                                    </li>
+                                    <li className="ml-1">
+                                        {session.user.image ? (
+                                            <Image
+                                                height={36}
+                                                width={36}
+                                                src={session.user.image}
+                                                alt="Avatar"
+                                                className="w-9 h-9 rounded-full ring-2 ring-nav-border"
+                                            />
+                                        ) : (
+                                            <div className="w-9 h-9 rounded-full bg-indigo-600 flex items-center justify-center text-white font-semibold text-sm ring-2 ring-zinc-700">
+                                                {session.user.name?.charAt(0).toUpperCase() ?? "U"}
+                                            </div>
+                                        )}
+                                    </li>
+                                </>
+                            ) : (
+                                <>
+                                    <li>
+                                        <Link href="/register" className="text-text-muted hover:text-white px-3 py-2 rounded-lg hover:bg-white/5 transition">
+                                            Registrarse
+                                        </Link>
+                                    </li>
+                                    <li>
+                                        <Link href="/signIn" className="bg-brand hover:bg-brand-hover text-white px-4 py-2 rounded-lg transition font-medium">
+                                            Iniciar sesión
+                                        </Link>
+                                    </li>
+                                </>
                             )}
                         </ul>
                     </div>
                 </nav>
+
                 <Provider>
                     <main>{children}</main>
                 </Provider>
