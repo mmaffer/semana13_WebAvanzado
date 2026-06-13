@@ -8,11 +8,10 @@ interface User {
     password: string;
 }
 
-const DB_PATH = path.join(process.cwd(), "data", "users.json");
+// /tmp es el único directorio escribible en Vercel (serverless)
+const DB_PATH = path.join("/tmp", "users.json");
 
 function ensureDb() {
-    const dir = path.dirname(DB_PATH);
-    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
     if (!fs.existsSync(DB_PATH)) fs.writeFileSync(DB_PATH, "[]");
 }
 
